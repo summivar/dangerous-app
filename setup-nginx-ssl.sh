@@ -21,27 +21,14 @@ sudo snap install --classic certbot
 # Create symlink for certbot
 sudo ln -sf /snap/bin/certbot /usr/bin/certbot
 
-# Create nginx config for pompushechka.pl
+# Create initial nginx config for pompushechka.pl (HTTP only)
 sudo tee /etc/nginx/sites-available/pompushechka.pl > /dev/null <<'EOF'
 server {
     listen 80;
-    server_name pompushechka.pl www.pompushechka.pl;
-    return 301 https://$server_name$request_uri;
-}
-
-server {
-    listen 443 ssl http2;
-    server_name pompushechka.pl www.pompushechka.pl;
-
-    ssl_certificate /etc/nginx/ssl/pompushechka.pl.crt;
-    ssl_certificate_key /etc/nginx/ssl/pompushechka.pl.key;
-
-    ssl_protocols TLSv1.2 TLSv1.3;
-    ssl_ciphers HIGH:!aNULL:!MD5;
-    ssl_prefer_server_ciphers on;
+    server_name pompushechka.pl;
 
     location / {
-        proxy_pass http://localhost:80;
+        proxy_pass http://localhost:3000;
         proxy_set_header Host $host;
         proxy_set_header X-Real-IP $remote_addr;
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
@@ -69,10 +56,19 @@ sudo systemctl restart nginx
 # Show status
 sudo systemctl status nginx --no-pager
 
+echo "🔧 Nginx setup complete! Now getting SSL certificate..."
+
+# Get SSL certificate from Let's Encrypt
+sudo certbot --nginx -d pompushechka.pl --non-interactive --agree-tos --email admin@pompushechka.pl
+
+# Test automatic renewal
+sudo certbot renew --dry-run
+
 echo "✅ Setup complete!"
 echo "🌐 Your site is available at:"
-echo "   HTTP:  http://pompushechka.pl"
+echo "   HTTP:  http://pompushechka.pl (redirects to HTTPS)"
 echo "   HTTPS: https://pompushechka.pl"
 echo ""
-echo "⚠️  Note: Self-signed certificate will show browser warning"
-echo "📱 Your app should be running on port 80 locally"
+echo "🔒 Let's Encrypt SSL certificate installed"
+echo "📱 Your app should be running on port 3000 locally"
+echo "🔄 SSL certificate will auto-renew"
