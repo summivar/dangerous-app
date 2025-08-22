@@ -16,7 +16,7 @@ async function bootstrap() {
       credentials: true,
     });
     
-    await app.listen(config.APP_PORT);
+    await app.listen(config.APP_PORT, '0.0.0.0');
   } catch (error) {
     logger.error('❌ Failed to start application:', error);
     process.exit(1);
