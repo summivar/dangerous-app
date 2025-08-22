@@ -1,0 +1,44 @@
+{
+  "name": "dangerous",
+  "version": "1.0.0",
+  "description": "Dangerous message sender with Nest.js and Telegram bot",
+  "main": "src/main.ts",
+  "type": "module",
+  "scripts": {
+    "dev": "bun --hot src/main.ts",
+    "start": "bun src/main.ts",
+    "build": "bun build src/main.ts --outdir ./dist --target bun --minify",
+    "lint": "eslint src/**/*.ts",
+    "lint:fix": "eslint src/**/*.ts --fix",
+    "format": "prettier --write src/**/*.ts",
+    "typecheck": "tsc --noEmit",
+    "docker:build": "docker build -t dangerous .",
+    "docker:up": "docker-compose up -d",
+    "docker:down": "docker-compose down",
+    "docker:logs": "docker-compose logs -f app"
+  },
+  "dependencies": {
+    "@nestjs/common": "^10.4.4",
+    "@nestjs/core": "^10.4.4",
+    "@nestjs/platform-express": "^10.4.4",
+    "@nestjs/serve-static": "^4.0.2",
+    "grammy": "^1.29.0",
+    "zod": "^3.23.8",
+    "reflect-metadata": "^0.2.2",
+    "rxjs": "^7.8.1"
+  },
+  "devDependencies": {
+    "@types/bun": "^1.1.10",
+    "@types/express": "^5.0.3",
+    "@types/node": "^22.7.4",
+    "@typescript-eslint/eslint-plugin": "^8.8.0",
+    "@typescript-eslint/parser": "^8.8.0",
+    "eslint": "^9.12.0",
+    "prettier": "^3.3.3",
+    "typescript": "^5.9.0"
+  },
+  "engines": {
+    "bun": ">=1.1.0",
+    "node": ">=20.0.0"
+  }
+}
